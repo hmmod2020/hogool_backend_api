@@ -163,20 +163,25 @@ def getNews(request,id):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def createLand(request):
-    currentUser = request.user.id
-    my_land=land(
-    land_oner=currentUser,
-    space = request.data['space'],
-    duration = request.data['duration'],
-    description = request.data['description'],
-    price_rent = request.data['price_rent'],
-    Location = request.data['Location'],
-    irrigation_typemodels = request.data['irrigation_typemodels'],
-    avalability = False,
-    )
-    if my_land:
-        my_land.save()
-        return Response("Done")
+    currentUser = request.user
+    type = get_type(currentUser)
+    if type=="land owner":
+        my_land = land(
+            land_oner=currentUser,
+            space=request.data['space'],
+            duration=request.data['duration'],
+            description=request.data['description'],
+            price_rent=request.data['price_rent'],
+            Location=request.data['Location'],
+            irrigation_typemodels=request.data['irrigation_typemodels'],
+            avalability=False,
+        )
+        if my_land:
+            my_land.save()
+            return Response("Done")
+    else:
+        return Response("you don't land owner")
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -194,6 +199,101 @@ def showAllCrop(request):
     allcrop=Crops.objects.all()
     ser=Crop_Serializer(allcrop,many=True)
     return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showLand(request,id):
+    if id==0:
+        lands=land.objects.filter(avalability=True)
+        ser=Land_Serializer(lands,many=True)
+        return Response(ser.data)
+    else:
+        lands = land.objects.get(pk=id)
+        ser = Land_Serializer(lands)
+        return Response(ser.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showUserLand(request):
+    currentUser = request.user.id
+    type=get_type(currentUser)
+    if type=="land owner":
+        lands = land.objects.filter(land_oner=currentUser)
+        ser = Land_Serializer(lands, many=True)
+        return Response(ser.data)
+    else:
+        return Response("you don't land owner")
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeNewState(request,id):
+    new=News.objects.get(pk=id)
+    avalability =request.data['avalability']
+    data={
+     "title" :new.title,
+     "pic":new.pic,
+     "contnet": new.contnet,
+      "avalability":avalability
+     }
+    ser=News_Serializer(new,data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response(ser.data)
+
+    else:
+        return Response("some thing is wrong")
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeLandState(request,id):
+    theLand = land.objects.get(pk=id)
+    user = User.objects.get(id=id)
+    usrInfo = UserInfo.objects.get(user_id=theLand.land_oner.pk)
+    avalability = None
+    if usrInfo.account_avalability:
+        avalability = request.data['avalability']
+    else:
+        avalability=False
+    data={
+    "land_oner":theLand.land_oner.pk,
+    "space" : theLand.space,
+    "duration":theLand.duration,
+    "description":theLand.description,
+    "price_rent" : theLand.price_rent,
+    "Location" :theLand.Location,
+    "irrigation_typemodels" : theLand.irrigation_typemodels,
+    "avalability" : avalability
+    }
+    ser = Land_Serializer(theLand, data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response(ser.data)
+    else:
+
+        return Response(ser.errors)
+
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def activateUser(request,id):
+    user=User.objects.get(id=id)
+    usrInfo=UserInfo.objects.get(user_id=user.id)
+    avalability = request.data['avalability']
+    data={
+    "user_id" :usrInfo.user_id.pk,
+    "full_name" :usrInfo.full_name,
+    "account_type" :usrInfo.account_type,
+    "account_avalability" :avalability
+    }
+    ser =UserInfo_Serializer(usrInfo,data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response("done")
+    else:
+        return Response(ser.errors)
+
 
 
 

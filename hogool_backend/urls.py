@@ -33,6 +33,13 @@ urlpatterns = [
     path('addLand/', vs.createLand),
     path('addCrop/', vs.addCrop),
     path('Crops/', vs.showAllCrop),
+    path('land/<int:id>/', vs.showLand),
+    path('myLand/', vs.showUserLand),
+    path('change_new_state/<int:id>/', vs.changeNewState),
+    path('change_land_state/<int:id>/', vs.changeLandState),
+    path('activateUser/<int:id>/', vs.activateUser)
+
+
 
 
 ]

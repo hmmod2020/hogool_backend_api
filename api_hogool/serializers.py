@@ -26,3 +26,13 @@ class Crop_Serializer(serializers.ModelSerializer):
     class Meta:
         model=Crops
         fields='__all__'
+
+class User_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields='__all__'
+
+class UserInfo_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=UserInfo
+        fields='__all__'
