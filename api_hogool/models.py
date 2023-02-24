@@ -74,7 +74,9 @@ class OrderJob(models.Model):
     state=models.CharField(max_length=15,blank=False,null=False,default='معلق')
 
 class FarmerProject(models.Model):
-    farmer=models.ForeignKey(User,on_delete=models.CASCADE)
+    farmer=models.ForeignKey(User,on_delete=models.CASCADE,related_name='farmer1')
+    creater=models.ForeignKey(User,on_delete=models.CASCADE,related_name='creater1')
+    investor=models.ForeignKey(User,on_delete=models.CASCADE,related_name='investor1')
     invesment_offer = models.ForeignKey(InvestmentOffers, on_delete=models.CASCADE)
     state = models.CharField(max_length=15,blank=False, null=False, default='معلق')
 

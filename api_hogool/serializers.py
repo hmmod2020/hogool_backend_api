@@ -46,3 +46,11 @@ class Offer_infoSerializer(serializers.ModelSerializer):
     class Meta:
         model=InvestmentOffers
         fields='__all__'
+
+class Orerd_land_rent_infoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrerdLandRent
+        fields='__all__'
+
+
+

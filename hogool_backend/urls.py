@@ -46,6 +46,15 @@ urlpatterns = [
     path('investor_offers/', vs.showMyOffer),
     path('investor_offers_admin/', vs.showAllOffer),
     path('change_offer_state/<int:id>/', vs.changeOfferState),
+    path('order_rent/<int:id>/', vs.createOredrRent),
+    path('my_rent/<int:id>/', vs.showMyOrderRentO),
+    path('my_order_rent/<int:id>/', vs.showMyOrderRentRequestU),
+    path('notifi_rent/<int:id>/', vs.changeStateOrderRent),
+    path('order_rent_filter/', vs.showMyOrderRentUF),
+    path('my_rent_filter/', vs.showMyOrderRentOF),
+
+
+
 
 
 

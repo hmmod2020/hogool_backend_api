@@ -133,11 +133,6 @@ def completeProfile(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addNew(request):
-    title = request.data['title']
-    pic = request.data['pic']
-    contnet = request.data['contnet']
-    avalability = request.data['avalability']
-
     new= News(
     title=request.data['title'],
     pic = request.data['pic'],
@@ -168,6 +163,7 @@ def createLand(request):
     if type=="land owner":
         my_land = land(
             land_oner=currentUser,
+            title=request.data['title'],
             space=request.data['space'],
             duration=request.data['duration'],
             description=request.data['description'],
@@ -419,6 +415,83 @@ def showAllOffer(request):
     ser = Offer_infoSerializer(Offers, many=True)
     return Response(ser.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createOredrRent(request,id):
+    currentUser = request.user
+    The_land=land.objects.get(pk=id)
+    order=OrerdLandRent(
+        land=The_land,
+        user_request=currentUser,
+        land_owner=The_land.land_oner,
+        state="waitting"
+    )
+    order.save()
+    return Response("done")
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showMyOrderRentO(request,id):
+    currentUser = request.user
+    if id ==0:
+        orders = OrerdLandRent.objects.filter(land_owner=currentUser.id)
+        ser = Orerd_land_rent_infoSerializer(orders, many=True)
+        return Response(ser.data)
+    else:
+        orders = OrerdLandRent.objects.get(pk=id)
+        ser = Orerd_land_rent_infoSerializer(orders)
+        return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showMyOrderRentRequestU(request,id):
+    currentUser = request.user
+    if id ==0:
+        orders = OrerdLandRent.objects.filter(user_request=currentUser.id)
+        ser = Orerd_land_rent_infoSerializer(orders, many=True)
+        return Response(ser.data)
+    else:
+        orders = OrerdLandRent.objects.get(pk=id)
+        ser = Orerd_land_rent_infoSerializer(orders)
+        return Response(ser.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeStateOrderRent(request,id):
+    newState=request.data['state']
+    orders = OrerdLandRent.objects.get(pk=id)
+    data={
+     "land" :orders.land.id,
+    "user_request" :orders.user_request.id,
+    "land_owner" : orders.land_owner.id,
+    "state" : newState
+    }
+    ser =Orerd_land_rent_infoSerializer(orders,data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response(ser.data)
+    else:
+        return Response(ser.errors)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showMyOrderRentUF(request):
+    currentUser = request.user
+    filter=request.data['filter']
+    orders = OrerdLandRent.objects.filter(user_request=currentUser.id, state=filter)
+    ser = Orerd_land_rent_infoSerializer(orders, many=True)
+    return Response(ser.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showMyOrderRentOF(request,id):
+    currentUser = request.user
+    filter = request.data['filter']
+    orders = OrerdLandRent.objects.filter(land_owner=currentUser.id, state=filter)
+    ser = Orerd_land_rent_infoSerializer(orders, many=True)
+    return Response(ser.data)
 
 
 def get_type(user):
