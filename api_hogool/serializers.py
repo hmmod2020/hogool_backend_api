@@ -36,3 +36,13 @@ class UserInfo_Serializer(serializers.ModelSerializer):
     class Meta:
         model=UserInfo
         fields='__all__'
+
+class CropFarmer_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=FarmerCrops
+        fields='__all__'
+
+class Offer_infoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=InvestmentOffers
+        fields='__all__'

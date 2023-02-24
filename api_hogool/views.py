@@ -295,6 +295,129 @@ def activateUser(request,id):
         return Response(ser.errors)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showFarmer(request,id):
+    currentUser = request.user.id
+    if id==0:
+        farmers=FarmerInfo.objects.filter(Q(avalability_for_job=False)&~Q(farmer_id=currentUser))
+        ser=Farmer_infoSerializer(farmers,many=True)
+        return Response(ser.data)
+    else:
+        farmers = FarmerInfo.objects.get(pk=id)
+        ser = Farmer_infoSerializer(farmers)
+        return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def farmerAddCrop(request):
+    currentUser = request.user
+    crop_o=request.data['crop']
+    insCrop=Crops.objects.get(pk=crop_o)
+    newCrop=FarmerCrops(Farmer=currentUser,crop=insCrop)
+    newCrop.save()
+    return Response("done")
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def farmerGetCrop(request,id):
+    if id==0:
+        currentUser = request.user.id
+        insCrop = FarmerCrops.objects.filter(Farmer=currentUser)
+        ser = CropFarmer_Serializer(insCrop, many=True)
+        return Response(ser.data)
+    else:
+        insCrop = FarmerCrops.objects.get(pk=id)
+        ser = CropFarmer_Serializer(insCrop)
+        return Response(ser.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createNewOffer(request):
+    currentUser = request.user
+    usrInfo = UserInfo.objects.get(user_id=currentUser.id)
+    financing = request.data['financing']
+    title=request.data['title']
+    description = request.data['description']
+    location = request.data['location']
+    duration = request.data['duration']
+    space = request.data['space']
+    description_the_land = request.data['description_the_land']
+    irrigation_typemodels = request.data['irrigation_typemodels']
+    avalability = None
+    if  usrInfo.account_avalability:
+        avalability=True
+    else:
+        avalability=False
+    investmentOffers=InvestmentOffers(
+        owner=currentUser,financing=financing,
+        description=description,
+        title=title,
+        location=location,duration=duration,
+        space=space,description_the_land=description_the_land,irrigation_typemodels=irrigation_typemodels,
+        avalability=avalability
+    )
+    investmentOffers.save()
+    return Response("done")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOffer(request,id):
+    currentUser = request.user.id
+    if id==0:
+        Offers = InvestmentOffers.objects.filter(Q(avalability=True) & ~Q(owner=currentUser))
+        ser = Offer_infoSerializer(Offers,many=True)
+        return Response(ser.data)
+    else:
+        Offer=InvestmentOffers.objects.get(pk=id)
+        ser = Offer_infoSerializer(Offer)
+        return Response(ser.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showMyOffer(request):
+    currentUser = request.user.id
+    my_offers=InvestmentOffers.objects.filter(owner=currentUser)
+    ser = Offer_infoSerializer(my_offers, many=True)
+    return Response(ser.data)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeOfferState(request,id):
+    user=User.objects.get(id=id)
+    usrInfo=UserInfo.objects.get(user_id=user.id)
+    avalability = request.data['avalability']
+    offer=InvestmentOffers.objects.get(pk=id)
+    if usrInfo.account_avalability:
+        data = {
+            "financing": offer.financing,
+            "description": offer.description,
+            "title":offer.title,
+            "location": offer.location,
+            "duration": offer.duration,
+            "space": offer.space,
+            "description_the_land": offer.description_the_land,
+            "irrigation_typemodels": offer.irrigation_typemodels,
+            "avalability": avalability,
+            "owner": user.id
+        }
+    ser=Offer_infoSerializer(offer,data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response(ser.data)
+    else:
+        return Response(ser.errors)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showAllOffer(request):
+    Offers = InvestmentOffers.objects.all()
+    ser = Offer_infoSerializer(Offers, many=True)
+    return Response(ser.data)
 
 
 

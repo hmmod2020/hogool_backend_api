@@ -8,6 +8,7 @@ from django.dispatch import receiver
 
 class FarmerInfo(models.Model):
     farmer_id=models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
+    full_name = models.CharField(default=" ", blank=False, null=False, max_length=35)
     phone=models.CharField(max_length=15,blank=False,null=False)
     description=models.TextField(max_length=500,blank=True,null=True)
     experince=models.IntegerField(default=0,blank=False,null=False)
@@ -17,6 +18,7 @@ class FarmerInfo(models.Model):
 
 class InvestorInfo(models.Model):
     investor_id = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
+    full_name = models.CharField(default=" ", blank=False, null=False, max_length=35)
     phone = models.CharField(max_length=15, blank=False, null=False)
     description = models.TextField(max_length=500, blank=True, null=True)
     profile_photo = models.CharField(max_length=500,blank=True, null=True)
@@ -44,6 +46,7 @@ class FarmerCrops(models.Model):
 class land(models.Model):
     land_oner=models.ForeignKey(User,on_delete=models.CASCADE)
     space=models.IntegerField(blank=False,null=False)
+    title = models.TextField(default=" ", blank=False, null=False, max_length=30)
     duration=models.IntegerField(default=6,blank=False,null=False)
     description=models.TextField(max_length=500,blank=False,null=False)
     price_rent=models.IntegerField(blank=False,null=False)
@@ -55,6 +58,7 @@ class InvestmentOffers(models.Model):
     owner=models.ForeignKey(User,on_delete=models.CASCADE)
     financing=models.IntegerField(blank=False,null=False)
     description=models.TextField(blank=False,null=False)
+    title = models.TextField(default=" ", blank=False, null=False, max_length=30)
     location=models.CharField(max_length=15,default='الخرطوم',null=False,blank=False)
     duration=models.IntegerField(default=6,blank=False,null=False)
     space = models.IntegerField(blank=False, null=False)
@@ -76,5 +80,6 @@ class FarmerProject(models.Model):
 
 class OrerdLandRent(models.Model):
     land=models.ForeignKey(land,on_delete=models.CASCADE)
-    user_request=models.ForeignKey(User,on_delete=models.CASCADE)
+    user_request=models.ForeignKey(User,on_delete=models.CASCADE,related_name='requestrer')
+    land_owner=models.ForeignKey(User,on_delete=models.CASCADE,related_name='onerLand')
     state = models.CharField(max_length=15,blank=False, null=False, default='معلق')

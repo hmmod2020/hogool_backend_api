@@ -24,20 +24,29 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('singUp/', vs.create_new_user,name='signUp'),
     path('api-token-auth/', views.obtain_auth_token),
+    path('singUp/', vs.create_new_user, name='signUp'),
     path('usertype/', vs.getUserType),
     path('profileComplete/', vs.completeProfile),
     path('addNewAdmin/', vs.addNew),
-    path('news/<int:id>/', vs.getNews),
     path('addLand/', vs.createLand),
     path('addCrop/', vs.addCrop),
+    path('addCropFarmer/', vs.farmerAddCrop),
+    path('showCropFarmer/<int:id>/', vs.farmerGetCrop),
     path('Crops/', vs.showAllCrop),
-    path('land/<int:id>/', vs.showLand),
-    path('myLand/', vs.showUserLand),
     path('change_new_state/<int:id>/', vs.changeNewState),
     path('change_land_state/<int:id>/', vs.changeLandState),
-    path('activateUser/<int:id>/', vs.activateUser)
+    path('activateUser/<int:id>/', vs.activateUser),
+    path('show_farmer/<int:id>/', vs.showFarmer),
+    path('land/<int:id>/', vs.showLand),
+    path('myLand/', vs.showUserLand),
+    path('news/<int:id>/', vs.getNews),
+    path('create_invesment_offer/', vs.createNewOffer),
+    path('invesment_offers/<int:id>/', vs.showOffer),
+    path('investor_offers/', vs.showMyOffer),
+    path('investor_offers_admin/', vs.showAllOffer),
+    path('change_offer_state/<int:id>/', vs.changeOfferState),
+
 
 
 
