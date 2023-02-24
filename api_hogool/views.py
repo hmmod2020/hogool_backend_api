@@ -334,7 +334,7 @@ def createNewOffer(request):
     currentUser = request.user
     usrInfo = UserInfo.objects.get(user_id=currentUser.id)
     financing = request.data['financing']
-    title=request.data['title']
+    title= request.data['title']
     description = request.data['description']
     location = request.data['location']
     duration = request.data['duration']
@@ -492,6 +492,123 @@ def showMyOrderRentOF(request,id):
     orders = OrerdLandRent.objects.filter(land_owner=currentUser.id, state=filter)
     ser = Orerd_land_rent_infoSerializer(orders, many=True)
     return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createOrderJobF(request):
+    currentUser = request.user
+    invesmentID=request.data['invesment']
+    invesmentOffer=InvestmentOffers.objects.get(pk=invesmentID)
+    invstor=invesmentOffer.owner
+    job=OrderJob(
+        creater=currentUser,
+        investor=invstor,
+        farmer=currentUser,
+        invesment_offer=invesmentOffer,
+        state='waitting'
+    )
+    job.save()
+    return Response("Done")
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createOrderJobI(request):
+    currentUser = request.user
+    invesmentID = request.data['invesment']
+    farmerID=request.data['farmer']
+    farmer = User.objects.get(id=farmerID)
+    invesmentOffer = InvestmentOffers.objects.get(pk=invesmentID)
+
+    invstor = invesmentOffer.owner
+    job = OrderJob(
+        creater=currentUser,
+        investor=invstor,
+        farmer=farmer,
+        invesment_offer=invesmentOffer,
+        state='waitting'
+    )
+    job.save()
+    return Response("Done")
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOrderJobFO(request):
+    currentUser = request.user.id
+    jobs=OrderJob.objects.filter(farmer=currentUser,creater=currentUser)
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showOrderJobFOFilter(request):
+    currentUser = request.user.id
+    state=request.data['state']
+    jobs=OrderJob.objects.filter(farmer=currentUser,creater=currentUser,state=state)
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOrderJobFN(request):
+    currentUser = request.user.id
+    jobs=OrderJob.objects.filter(Q(farmer=currentUser)&~Q(creater=currentUser))
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showOrderJobFNFilter(request):
+    currentUser = request.user.id
+    state = request.data['state']
+    jobs=OrderJob.objects.filter(Q(farmer=currentUser)&~Q(creater=currentUser)&Q(state=state))
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOrderJobIN(request):
+    currentUser = request.user.id
+    jobs=OrderJob.objects.filter(Q(investor=currentUser)&~Q(creater=currentUser))
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showOrderJobINFilter(request):
+    currentUser = request.user.id
+    state = request.data['state']
+    jobs=OrderJob.objects.filter(Q(investor=currentUser)&~Q(creater=currentUser)&Q(state=state))
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOrderJobIO(request):
+    currentUser = request.user.id
+    jobs=OrderJob.objects.filter(investor=currentUser,creater=currentUser)
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showOrderJobIOFilter(request):
+    currentUser = request.user.id
+    state = request.data['state']
+    jobs=OrderJob.objects.filter(investor=currentUser,creater=currentUser,state=state)
+    ser=jobs__infoSerializer(jobs,many=True)
+    return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showOrderJob(request,id):
+    job=OrderJob.objects.get(pk=id)
+    ser=jobs__infoSerializer(job)
+    return Response(ser.data)
+
+
+
+
 
 
 def get_type(user):

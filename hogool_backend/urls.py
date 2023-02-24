@@ -52,6 +52,17 @@ urlpatterns = [
     path('notifi_rent/<int:id>/', vs.changeStateOrderRent),
     path('order_rent_filter/', vs.showMyOrderRentUF),
     path('my_rent_filter/', vs.showMyOrderRentOF),
+    path('create_order_job_by_farmer/', vs.createOrderJobF),
+    path('create_order_job_by_investor/', vs.createOrderJobI),
+    path('show_order_Job_farmer_order/', vs.showOrderJobFO),
+    path('show_order_Job_farmer_order_filter/', vs.showOrderJobFOFilter),
+    path('show_order_Job_farmer_notfication/', vs.showOrderJobFN),
+    path('show_order_Job_farmer_notfication_filter/', vs.showOrderJobFNFilter),
+    path('show_order_Job_investor_order/', vs.showOrderJobIO),
+    path('show_order_Job_investor_order_filter/', vs.showOrderJobIOFilter),
+    path('show_order_Job_investor_notfication/', vs.showOrderJobIN),
+    path('show_order_Job_investor_notfication_filter/', vs.showOrderJobINFilter),
+    path('select_job/<int:id>/', vs.showOrderJob),
 
 
 

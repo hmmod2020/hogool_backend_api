@@ -52,5 +52,10 @@ class Orerd_land_rent_infoSerializer(serializers.ModelSerializer):
         model=OrerdLandRent
         fields='__all__'
 
+class jobs__infoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=OrderJob
+        fields='__all__'
+
 
 
