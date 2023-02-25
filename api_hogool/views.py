@@ -208,6 +208,17 @@ def showLand(request,id):
         ser = Land_Serializer(lands)
         return Response(ser.data)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def showLandFiltter(request,id):
+    location=request.data['location']
+    irrigation_typemodels=request.data['irrigation_typemodels']
+    lands = land.objects.filter(Q(avalability=True)&(Q(Location=location)|Q(irrigation_typemodels=irrigation_typemodels)))
+    ser = Land_Serializer(lands, many=True)
+    return Response(ser.data)
+
+
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -303,6 +314,15 @@ def showFarmer(request,id):
         farmers = FarmerInfo.objects.get(pk=id)
         ser = Farmer_infoSerializer(farmers)
         return Response(ser.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def showInvestor(request,id):
+    investor = InvestorInfo.objects.get(pk=id)
+    ser = Investor_infoSerializer(investor)
+    return Response(ser.data)
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -607,8 +627,24 @@ def showOrderJob(request,id):
     return Response(ser.data)
 
 
-
-
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def changeJobState(request,id):
+    newState=request.data['state']
+    job = OrderJob.objects.get(pk=id)
+    data={
+        "state": newState,
+        "creater": job.creater,
+        "investor": job.investor,
+        "farmer": job.farmer,
+        "invesment_offer": job.invesment_offer
+    }
+    ser =jobs__infoSerializer(job,data=data)
+    if ser.is_valid():
+        ser.save()
+        return Response(ser.data)
+    else:
+        return Response(ser.errors)
 
 
 def get_type(user):

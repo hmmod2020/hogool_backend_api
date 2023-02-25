@@ -38,7 +38,9 @@ urlpatterns = [
     path('change_land_state/<int:id>/', vs.changeLandState),
     path('activateUser/<int:id>/', vs.activateUser),
     path('show_farmer/<int:id>/', vs.showFarmer),
+    path('show_farmer/<int:id>/',vs.showInvestor),
     path('land/<int:id>/', vs.showLand),
+    path('land_filtter/', vs.showLandFiltter),
     path('myLand/', vs.showUserLand),
     path('news/<int:id>/', vs.getNews),
     path('create_invesment_offer/', vs.createNewOffer),
@@ -63,11 +65,7 @@ urlpatterns = [
     path('show_order_Job_investor_notfication/', vs.showOrderJobIN),
     path('show_order_Job_investor_notfication_filter/', vs.showOrderJobINFilter),
     path('select_job/<int:id>/', vs.showOrderJob),
-
-
-
-
-
+    path('change_job_state/', vs.changeJobState),
 
 
 
