@@ -66,7 +66,4 @@ urlpatterns = [
     path('show_order_Job_investor_notfication_filter/', vs.showOrderJobINFilter),
     path('select_job/<int:id>/', vs.showOrderJob),
     path('change_job_state/', vs.changeJobState),
-
-
-
 ]
